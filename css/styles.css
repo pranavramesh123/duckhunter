@@ -1,0 +1,70 @@
+/* Stylesheet for duck hunter */
+
+body {
+      background: #efefef;
+      margin: 2px;
+      font-family: "Arial Black", Gadget, sans-serif;
+}
+	  
+#background {
+      display:block;      
+      width:100%;
+      height: 510px;
+      background-image:    url(../images/background.jpg);
+      background-size:     cover;                      /* <------ */
+      background-repeat:   no-repeat;
+      background-position: center center;              /* optional, center the image */    
+}
+
+#hunt-canvas {
+      display: inline-block;      
+      cursor: pointer;
+      position: absolute;      
+      top:120;
+      left:0;
+      z-index:1;
+      /*width:100%;
+      height:100%;      */
+      /*width:100%;
+      height:800px;      */
+      background: rgba(255,255,255,0.1);
+      margin: 0px;
+      padding: 0px;  
+      z-index: 1;
+}
+
+#info {
+      position: absolute;            
+      width: 160px;      
+      left: 50%;
+      top: 360px;
+}
+
+/* Standard syntax for color animation */
+@keyframes loop-colors {
+    0%   {background-color: white;}
+    25%  {background-color: yellow;}
+    50%  {background-color: lightgreen;}
+    100% {background-color: lightgoldenrodyellow;}
+}
+
+#info .startbutton {
+      position: relative;  
+      left: -50%;
+      width: 160px;      
+      color: grey;      
+      border: 3px solid darkgray;
+      background-color: lightgoldenrodyellow;
+      padding: 6px;       
+      text-align:center;
+      vertical-align:middle;
+      border-radius: 12px;  
+      cursor: pointer;              
+      animation-name: loop-colors;
+      animation-duration: 5s;
+      z-index: 2;      
+}
+
+#info .startbutton:hover { 
+    color: lightblue;
+}
