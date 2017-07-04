@@ -45,6 +45,8 @@ function Duck(size, speed, scoresWhenShot) {
 	this.deltaY = (this.y - Math.random() * 200) / (hunt.canvas.width / speed);
 	if (this.deltaY < 0) this.deltaY = 0;
 
+	this.hit = false;
+
 	this.minX = -40;
 
 	this.lastChanged = new Date().getTime();
@@ -58,6 +60,8 @@ function Duck(size, speed, scoresWhenShot) {
 	this.images.push(hunt.createImage("images/duck3.png", 80, 91));
 
 	this.drawDuck = function (context) {
+
+		if(this.hit) return;
 
 		// Rotate duck picture in order to make it look like flying.
 		var now = new Date().getTime();
@@ -75,8 +79,8 @@ function Duck(size, speed, scoresWhenShot) {
 		this.y = this.y - this.deltaY;
 
 		// Calculate image size.
-		var xSize = size;
-		var ySize = 91 / 80 * xSize;
+		var xSize = this.getSize()[0];
+		var ySize = this.getSize()[1];
 
 		// Paint the duck.
 		if (this.x >= this.minX) {
@@ -89,6 +93,26 @@ function Duck(size, speed, scoresWhenShot) {
 		return this.x < this.minX;
 	}
 
+	this.getSize = function() {
+		var xSize = this.size;
+		var ySize = 91 / 80 * xSize;		
+		return [xSize, ySize];
+	}
+
+	this.isHitByShot = function(gunX, gunY, gunSize) {
+		var duckCenterX = this.x + this.getSize()[0]/2;
+		var duckCenterY = this.y + this.getSize()[1]/2;
+
+		if(gunX > (duckCenterX - gunSize) && gunX < (duckCenterX + gunSize)) 
+		{
+			if(gunY > (duckCenterY - gunSize) && gunY < (duckCenterY + gunSize)) {
+				this.hit = true;
+			 	return true;
+			}
+		}
+		
+	}
+
 }
 
 // ---------------------------------------------
@@ -96,6 +120,7 @@ function Duck(size, speed, scoresWhenShot) {
 // ---------------------------------------------
 
 function Gun() {
+	this.size = 20; // Gun shot size
 
 	this.x = hunt.canvas.width / 2;
 	this.y = hunt.canvas.height / 2;
@@ -108,23 +133,54 @@ function Gun() {
 	}
 
 	this.drawSight = function (context) {
+		// Paint circle
 		context.beginPath();
 		context.strokeStyle="#808080";		
 		context.arc(this.x, this.y, 30, 0, 2 * Math.PI);
 		context.stroke();
+
+		context.beginPath();
+		context.strokeStyle="#CCFF33";						
+		context.moveTo(this.x - 16, this.y);
+		context.lineTo(this.x - 4, this.y);
+		context.stroke();		
+		context.moveTo(this.x + 16, this.y);
+		context.lineTo(this.x + 4, this.y);
+		context.stroke();				
+
+		context.beginPath();
+		context.moveTo(this.x, this.y - 16);
+		context.lineTo(this.x, this.y - 4);
+		context.stroke();	
+		context.beginPath();			
+		context.moveTo(this.x, this.y + 16);
+		context.lineTo(this.x, this.y + 4);
+		context.stroke();				
+
 	}
 
-	this.fire = function () {
+	this.fire = function (ducks) {
 
 		// Audio must be reloaded after playing, else old sound will block new from playing.
 		this.gunShotAudio.play();
 		this.gunShotAudio = new Audio("sounds/gunshot.mp3");
 
-		return true;
+		// See if shot hit some duck.
+		for(var i = 0; i < ducks.length; i++) {
+			if(ducks[i].isHitByShot(this.x, this.y, this.size)) {
+				console.log("HIT!!");
+			}
+		}
+
+		return false;
 	}
 
 }
 
+
+// ---------------------------------------------
+// Base functionality
+// ---------------------------------------------
 
 // Image factory
 hunt.createImage = function (src, w, h) {
@@ -158,7 +214,7 @@ hunt.mouseClickEvent = function (evt) {
 	var mousePos = hunt.getMousePos(hunt.canvas, evt);
 	var message = 'Click: ' + mousePos.x + ',' + mousePos.y;
 
-	hunt.gun.fire();
+	hunt.gun.fire(hunt.ducks);
 
 }
 
@@ -179,6 +235,9 @@ hunt.main = function main() {
 
 	hunt.canvas.addEventListener('mousemove', hunt.mouseMoveEvent, false);
 	hunt.canvas.addEventListener('click', hunt.mouseClickEvent, false);
+
+	// Avoid that double clicking selects the element.
+	hunt.canvas.addEventListener('mousedown', function(e){ e.preventDefault(); }, false);
 
 	/* Resize the canvas to fill browser window dynamically. */
 	window.addEventListener('resize', resizeCanvas, false);
