@@ -60,7 +60,7 @@ function Gun(hunt) {
 	};
 
 	this.fire = function (ducks) {
-		var hitByShot = false;
+		var hitByShot = 0;
 
 		// Audio must be reloaded after playing, else old sound will block new from playing.
 		this.gunShotAudio.play();
@@ -69,7 +69,7 @@ function Gun(hunt) {
 		// See if shot hit some duck.
 		for (var i = 0; i < ducks.length; i++) {
 			if (ducks[i].isHitByShot(this.x, this.y, this.size)) {
-				hitByShot = true;
+				hitByShot += ducks[i].scores;
 			}
 		}
 

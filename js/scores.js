@@ -22,13 +22,17 @@ function Scores(hunt) {
     this.hunt = hunt;
     this.scores = 0;
 	this.height = 12;     
-    this.x = 0;
+    this.x = 8;
     this.y = hunt.canvas.height - this.height;
+
+    this.addScores = function (newScores) {
+        this.scores += newScores;
+    }
 
 	this.drawScores = function (context) {
         context.fillStyle="white";
         context.font="20px Verdana";
-        context.fillText("SCORES: " + this.scores, this.x + 8, this.y);        
+        context.fillText("SCORES: " + this.scores, this.x, this.y);        
 	};
 
 }

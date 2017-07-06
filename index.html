@@ -5,16 +5,35 @@
 <head>
 	<title>Duck hunter</title>
 	<link rel="stylesheet" type="text/css" href="css/styles.css">
-	<script src='js/duck.js'></script>	
-	<script src='js/gun.js'></script>		
-	<script src='js/shells.js'></script>		
-	<script src='js/scores.js'></script>	
+	<script src='js/duck.js'></script>
+	<script src='js/gun.js'></script>
+	<script src='js/shells.js'></script>
+	<script src='js/scores.js'></script>
+	<script src='js/lives.js'></script>	
 	<script src='js/hunt.js'></script>
 </head>
 
 <body onLoad="hunt.main()">
-	<h1>Duck hunter</h1>
-	<h2>Javascript game by Mikael Sundfors</h2>
+
+	<svg viewbox="0 0 100 15">
+		<defs>
+			<linearGradient id="gradient" x1="0" x2="0" y1="0" y2="1">
+				<stop offset="5%" stop-color="#326384" />
+				<stop offset="95%" stop-color="#123752" />
+			</linearGradient>
+			<pattern id="wave" x="0" y="0" width="120" height="20" patternUnits="userSpaceOnUse">
+				<path id="wavePath" d="M-40 9 Q-30 7 -20 9 T0 9 T20 9 T40 9 T60 9 T80 9 T100 9 T120 9 V20 H-40z" mask="url(#mask)" fill="url(#gradient)">
+					<animateTransform attributeName="transform" begin="0s" dur="4.5s" type="translate" from="0,0" to="40,0" repeatCount="indefinite"
+					/>
+				</path>
+			</pattern>
+		</defs>
+		<text text-anchor="middle" x="50" y="12" font-size="10" fill="url(#wave)" fill-opacity="0.6">Duck hunter</text>
+		<text text-anchor="middle" x="50" y="12" font-size="10" fill="url(#gradient)" fill-opacity="0.1">Duck hunter</text>
+	</svg>
+
+	<h4>The game</h4>
+
 	<div id="background">
 		<div id="info">
 			<div class="startbutton">
@@ -25,8 +44,7 @@
 			Canvas not supported
 		</canvas>
 	</div>
-	<br>
-
+	<small>© Mikael Sundfors 2017</small>
 </body>
 
 </html>

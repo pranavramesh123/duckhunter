@@ -27,6 +27,8 @@ hunt.gun;
 
 hunt.scores;
 
+hunt.lives;
+
 hunt.mainHandlerInterval = 1000;
 hunt.timeSinceMainHandler;
 
@@ -35,6 +37,8 @@ hunt.duckCreationInterval = 5000;
 
 hunt.canvas;
 hunt.context;
+
+
 
 // ---------------------------------------------
 // Base functionality
@@ -70,14 +74,12 @@ hunt.startbuttonclickevent = function () {
 
 hunt.mouseClickEvent = function (evt) {
 	if(hunt.running) {
-		hunt.gun.fire(hunt.ducks);
+		hunt.scores.addScores(hunt.gun.fire(hunt.ducks));
 	}
 };
 
 hunt.mouseMoveEvent = function (evt) {
 	var mousePos = hunt.getMousePos(hunt.canvas, evt);
-	var message = "Mouse position: " + mousePos.x + "," + mousePos.y;
-
 	hunt.gun.move(mousePos.x, mousePos.y);
 };
 
@@ -90,6 +92,8 @@ hunt.main = function main() {
 	hunt.gun = new Gun(hunt);
 
 	hunt.scores = new Scores(hunt)
+
+	hunt.lives = new Lives(hunt);
 
 	hunt.canvas.addEventListener("mousemove", hunt.mouseMoveEvent, false);
 	hunt.canvas.addEventListener("click", hunt.mouseClickEvent, false);
@@ -136,6 +140,8 @@ hunt.paintGame = function (ducks, canvas, context) {
 	// Draw scores
 	hunt.scores.drawScores(hunt.context);
 
+	// Draw lives left in game.
+	hunt.lives.drawLives(hunt.context);
 };
 
 hunt.mainHandler = function () {
@@ -182,6 +188,16 @@ hunt.mainHandler = function () {
 
 			hunt.timeToNewDuckCreated = new Date().getTime() + Math.random() * hunt.duckCreationInterval;
 
+		}
+
+		// Decrease lives if a duck reashed outside canvas.
+		for(var j = 0; j < hunt.ducks.length; j++) {
+			if (hunt.ducks[j].outsideCanvas()) { 
+				if(!hunt.lives.removeLife()) {
+					// Game over.
+					window.alert("sometext");
+				}
+			}
 		}
 
 		// Remove objects outside of canvas and finished objects so memory can be released.

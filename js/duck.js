@@ -33,7 +33,7 @@ function Duck(hunt, size, speed, scoresWhenShot) {
 
     this.hit = false;
     this.readyToRemove = false;
-    this.minX = -40;
+    this.minX = -46;
 
     this.lastChanged = new Date().getTime();
     this.imageIndex = 0;
@@ -78,14 +78,9 @@ function Duck(hunt, size, speed, scoresWhenShot) {
             var now = new Date().getTime();
             if ((now - this.lastChanged) < 500) {
                 // Paint scores.
-                var xCenter = this.x + this.getSize()[0]/2;         
                 var yCenter = this.y + this.getSize()[1]/2;
 
-                var grd=context.createRadialGradient(xCenter, yCenter, 4, xCenter, yCenter, 10);
-                grd.addColorStop(0,"#ffff44");
-                grd.addColorStop(0.5,"#ffffaa");                
-                grd.addColorStop(1,"#e8e855");
-                context.fillStyle = grd; 
+                context.fillStyle = "white"; 
                 context.font="20px Verdana";
                 context.fillText(this.scores, this.x, yCenter);
             }
@@ -100,6 +95,10 @@ function Duck(hunt, size, speed, scoresWhenShot) {
             return true;
         }
         else return this.x < this.minX; // Outside canvas.
+    };
+
+    this.outsideCanvas = function () {
+         return this.x < this.minX; // Outside canvas.
     };
 
     this.getSize = function () {
