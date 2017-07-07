@@ -20,6 +20,7 @@ var hunt = hunt || {};
 hunt.fps = 30; 				/* Animation update - frames per second */
 
 hunt.running = false;
+hunt.gameOver = false;
 
 hunt.ducks = [];
 
@@ -63,17 +64,26 @@ hunt.getMousePos = function (canvas, evt) {
 
 hunt.startbuttonclickevent = function () {
 
-	var arr = document.getElementsByClassName("startbutton");
-	arr[0].style.display = "none";
+	var elmt = document.getElementById("startbutton");
+	elmt.style.display = "none";
 
-	var cnvas = document.getElementById("hunt-canvas");
-	cnvas.style.cursor = "none";
+	var elmt1 = document.getElementById("gameover");
+	elmt1.style.display = "none";
+
+	hunt.canvas.style.cursor = "none";
+
+	if(hunt.gameOver) {
+		hunt.gun = new Gun(hunt);
+		hunt.scores = new Scores(hunt)
+		hunt.lives = new Lives(hunt);		
+		hunt.gameOver = false;
+	}
 
 	hunt.running = true;
 };
 
 hunt.mouseClickEvent = function (evt) {
-	if(hunt.running) {
+	if (hunt.running) {
 		hunt.scores.addScores(hunt.gun.fire(hunt.ducks));
 	}
 };
@@ -83,8 +93,16 @@ hunt.mouseMoveEvent = function (evt) {
 	hunt.gun.move(mousePos.x, mousePos.y);
 };
 
+hunt.endGame = function () {
+	hunt.gameOver = true;
+
+	hunt.ducks.length = 0; // Remove all ducks.
+
+	hunt.canvas.style.cursor = "pointer";	
+};
+
 /* Main() - call this function to start animation. */
-hunt.main = function main() {
+hunt.main = function () {
 
 	hunt.canvas = document.getElementById("hunt-canvas");
 	hunt.context = hunt.canvas.getContext("2d");
@@ -118,8 +136,8 @@ hunt.main = function main() {
 
 	hunt.timeSinceMainHandler = new Date().getTime();
 
-	var arr = document.getElementsByClassName("startbutton");
-	arr[0].addEventListener("click", hunt.startbuttonclickevent, false);
+	var elmt = document.getElementById("startbutton");
+	elmt.addEventListener("click", hunt.startbuttonclickevent, false);
 };
 
 hunt.paintGame = function (ducks, canvas, context) {
@@ -135,8 +153,9 @@ hunt.paintGame = function (ducks, canvas, context) {
 	}
 
 	// Draw sight
-	hunt.gun.drawSight(hunt.context);
-
+	if(!hunt.gameOver) {
+		hunt.gun.drawSight(hunt.context);
+	}
 	// Draw scores
 	hunt.scores.drawScores(hunt.context);
 
@@ -148,57 +167,63 @@ hunt.mainHandler = function () {
 	if ((new Date().getTime() - hunt.timeSinceMainHandler) > hunt.mainHandlerInterval) {
 		hunt.timeSinceMainHandler = new Date().getTime();
 
-		// Create the ducks.
-		if (new Date().getTime() > hunt.timeToNewDuckCreated) {
+		if (!hunt.gameOver) {
+			// Create the ducks.
+			if (new Date().getTime() > hunt.timeToNewDuckCreated) {
 
-			var size = 80;
-			var speed = 5;
-			var scores = 100;
+				var size = 80;
+				var speed = 5;
+				var scores = 100;
 
-			switch (Math.round(Math.random() * 7)) {
-				case 2:
-					size = 20;
-					speed = 1;
-					scores = 100;
-					break;
-				case 3:
-					size = 60;
-					speed = 2;
-					scores = 80;
-					break;
-				case 4:
-					size = 80;
-					speed = 4.5;
-					scores = 100;
-					break;
-				case 5:
-					size = 80;
-					speed = 5;
-					scores = 120;
-					break;
-				case 6:
-					size = 120;
-					speed = 10;
-					scores = 500;
-					break;
+				switch (Math.round(Math.random() * 7)) {
+					case 2:
+						size = 20;
+						speed = 1;
+						scores = 100;
+						break;
+					case 3:
+						size = 60;
+						speed = 2;
+						scores = 80;
+						break;
+					case 4:
+						size = 80;
+						speed = 4.5;
+						scores = 100;
+						break;
+					case 5:
+						size = 80;
+						speed = 5;
+						scores = 120;
+						break;
+					case 6:
+						size = 120;
+						speed = 10;
+						scores = 500;
+						break;
+				}
+
+				hunt.ducks.push(new Duck(hunt, size, speed, scores));
+
+
+				hunt.timeToNewDuckCreated = new Date().getTime() + Math.random() * hunt.duckCreationInterval;
 			}
-
-			hunt.ducks.push(new Duck(hunt, size, speed, scores));
-
-
-			hunt.timeToNewDuckCreated = new Date().getTime() + Math.random() * hunt.duckCreationInterval;
-
 		}
 
 		// Decrease lives if a duck reashed outside canvas.
-		for(var j = 0; j < hunt.ducks.length; j++) {
-			if (hunt.ducks[j].outsideCanvas()) { 
-				if(!hunt.lives.removeLife()) {
+		for (var j = 0; j < hunt.ducks.length; j++) {
+			if (hunt.ducks[j].outsideCanvas()) {
+				if (!hunt.lives.removeLife()) {
 					// Game over.
-					window.alert("sometext");
+					var elmt1 = document.getElementById("gameover");
+					elmt1.style.display = "block";
+					var elmt2 = document.getElementById("startbutton");					
+					elmt2.style.display = "block";					
+					hunt.endGame();
 				}
 			}
 		}
+
 
 		// Remove objects outside of canvas and finished objects so memory can be released.
 		for (var i = hunt.ducks.length - 1; i >= 0; i--) {
