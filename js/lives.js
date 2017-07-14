@@ -34,7 +34,7 @@ function Lives(hunt) {
         else {
             return true;
         }
-    }
+    };
 
 	this.drawLives = function (context) {
 		for(var i = 0; i < this.count; i++) {

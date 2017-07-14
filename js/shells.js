@@ -27,13 +27,15 @@ function Shells(hunt) {
 	this.images = [];
     this.loadStarted = new Date().getTime();
 
+	this.reLoadAudioStart = new Audio("sounds/click1.mp3");
+	this.reLoadAudioEnd = new Audio("sounds/click2.mp3");    
 
     // push images to the array
-    this.images.push(this.hunt.createImage("images/shells1.png", 100, 208));
-    this.images.push(this.hunt.createImage("images/shells2.png", 100, 208));
-    this.images.push(this.hunt.createImage("images/shells3.png", 100, 208));
-    this.images.push(this.hunt.createImage("images/shells4.png", 100, 208));
-    this.images.push(this.hunt.createImage("images/shells5.png", 100, 208));    
+    this.images.push(this.hunt.createImage("images/shells1.png", 100, 208)); // Loaded with two shoots.
+    this.images.push(this.hunt.createImage("images/shells2.png", 100, 208)); // Loaded with one shoot.
+    this.images.push(this.hunt.createImage("images/shells3.png", 100, 208)); // Empty.
+    this.images.push(this.hunt.createImage("images/shells4.png", 100, 208)); // Loading, one shot in pipes.
+    this.images.push(this.hunt.createImage("images/shells5.png", 100, 208)); // Loading, two shots in pipes.   
 
     this.useShell = function () {
         if(this.imageIndex === 0) {
@@ -54,6 +56,8 @@ function Shells(hunt) {
     };
 
     this.reLoad = function () {
+		this.reLoadAudioStart.play();
+
         this.loadStarted = new Date().getTime();
 
         if(this.imageIndex === 1) {
@@ -72,6 +76,7 @@ function Shells(hunt) {
         if(this.imageIndex === 3 || this.imageIndex === 4) {
             var now = new Date().getTime();
             if ((now - this.loadStarted) > 1300) {
+		        this.reLoadAudioEnd.play();                
                 this.imageIndex = 0;
             }
         }

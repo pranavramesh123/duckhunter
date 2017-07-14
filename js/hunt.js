@@ -84,7 +84,7 @@ hunt.startbuttonclickevent = function () {
 };
 
 hunt.mouseClickEvent = function (evt) {
-	if (hunt.running) {
+	if (hunt.running && !hunt.gameOver) {
 		var mousePos = hunt.getMousePos(hunt.canvas, evt);
 
 		if(hunt.shells.insideArea(mousePos.x, mousePos.y)) {
