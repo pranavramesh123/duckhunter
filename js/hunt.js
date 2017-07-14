@@ -74,6 +74,7 @@ hunt.startbuttonclickevent = function () {
 
 	if(hunt.gameOver) {
 		hunt.gun = new Gun(hunt);
+		hunt.shells	= new Shells(hunt);
 		hunt.scores = new Scores(hunt)
 		hunt.lives = new Lives(hunt);		
 		hunt.gameOver = false;
@@ -84,13 +85,37 @@ hunt.startbuttonclickevent = function () {
 
 hunt.mouseClickEvent = function (evt) {
 	if (hunt.running) {
-		hunt.scores.addScores(hunt.gun.fire(hunt.ducks));
+		var mousePos = hunt.getMousePos(hunt.canvas, evt);
+
+		if(hunt.shells.insideArea(mousePos.x, mousePos.y)) {
+			// User is pointing on the shells.
+			hunt.shells.reLoad();
+		}
+		else {
+			if(hunt.shells.useShell()) {
+				hunt.scores.addScores(hunt.gun.fire(hunt.ducks));
+			}
+		}
 	}
 };
 
 hunt.mouseMoveEvent = function (evt) {
-	var mousePos = hunt.getMousePos(hunt.canvas, evt);
-	hunt.gun.move(mousePos.x, mousePos.y);
+	if (hunt.running) {	
+		var mousePos = hunt.getMousePos(hunt.canvas, evt);
+		if(hunt.shells.insideArea(mousePos.x, mousePos.y)) {
+			// User is pointing on the shells.
+			hunt.canvas.style.cursor = "pointer";
+		}
+		else {
+			// Move gun
+			hunt.canvas.style.cursor = "none";		
+			hunt.gun.move(mousePos.x, mousePos.y);
+		}
+	}
+
+	if(hunt.gameOver) {
+		hunt.canvas.style.cursor = "pointer";
+	}
 };
 
 hunt.endGame = function () {
@@ -109,7 +134,9 @@ hunt.main = function () {
 
 	hunt.gun = new Gun(hunt);
 
-	hunt.scores = new Scores(hunt)
+	hunt.shells	= new Shells(hunt);
+
+	hunt.scores = new Scores(hunt);
 
 	hunt.lives = new Lives(hunt);
 
@@ -125,7 +152,7 @@ hunt.main = function () {
 	function resizeCanvas() {
 		// Make it visually fill the positioned parent
 		hunt.canvas.style.width = "100%";
-		//  		canvas.style.height="100%";
+		hunt.canvas.style.height= "500px";
 		// ...then set the internal size to match
 		hunt.canvas.width = hunt.canvas.offsetWidth;
 		hunt.canvas.height = hunt.canvas.offsetHeight;
@@ -156,6 +183,9 @@ hunt.paintGame = function (ducks, canvas, context) {
 	if(!hunt.gameOver) {
 		hunt.gun.drawSight(hunt.context);
 	}
+
+	hunt.shells.drawShells(hunt.context);
+
 	// Draw scores
 	hunt.scores.drawScores(hunt.context);
 
@@ -232,6 +262,9 @@ hunt.mainHandler = function () {
 				hunt.ducks.splice(i, 1);
 			}
 		}
+
+		// Make sure state is processed in shells.
+		hunt.shells.process();
 
 		console.log("Number of ducks: " + hunt.ducks.length);
 

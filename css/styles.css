@@ -27,7 +27,7 @@ svg {
 #background {
       display:block;      
       width:100%;
-      height: 510px;
+      height: 500px;
       background-image:    url(../images/background.jpg);
       background-size:     cover;                      /* <------ */
       background-repeat:   no-repeat;
