@@ -75,7 +75,7 @@ function Shells(hunt) {
     this.process = function () {
         if(this.imageIndex === 3 || this.imageIndex === 4) {
             var now = new Date().getTime();
-            if ((now - this.loadStarted) > 1300) {
+            if ((now - this.loadStarted) > 1000) {
 		        this.reLoadAudioEnd.play();                
                 this.imageIndex = 0;
             }

@@ -39,7 +39,7 @@ hunt.duckCreationInterval = 5000;
 hunt.canvas;
 hunt.context;
 
-
+hunt.audioLoop = new Audio("sounds/music.mp3");
 
 // ---------------------------------------------
 // Base functionality
@@ -165,6 +165,9 @@ hunt.main = function () {
 
 	var elmt = document.getElementById("startbutton");
 	elmt.addEventListener("click", hunt.startbuttonclickevent, false);
+
+	hunt.audioLoop.loop = true;
+	hunt.audioLoop.play();
 };
 
 hunt.paintGame = function (ducks, canvas, context) {
@@ -206,29 +209,34 @@ hunt.mainHandler = function () {
 				var scores = 100;
 
 				switch (Math.round(Math.random() * 7)) {
-					case 2:
+					case 1:
 						size = 20;
-						speed = 1;
-						scores = 100;
+						speed = 1.2;
+						scores = 85;
+						break;					
+					case 2:
+						size = 30;
+						speed = 1.8;
+						scores = 70;
 						break;
 					case 3:
-						size = 60;
-						speed = 2;
+						size = 50;
+						speed = 2.5;
 						scores = 80;
 						break;
 					case 4:
-						size = 80;
+						size = 70;
 						speed = 4.5;
 						scores = 100;
 						break;
 					case 5:
-						size = 80;
-						speed = 5;
+						size = 90;
+						speed = 5.5;
 						scores = 120;
 						break;
 					case 6:
 						size = 120;
-						speed = 10;
+						speed = 8;
 						scores = 500;
 						break;
 				}
