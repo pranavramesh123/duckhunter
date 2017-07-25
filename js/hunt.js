@@ -40,6 +40,7 @@ hunt.canvas;
 hunt.context;
 
 hunt.audioLoop = new Audio("sounds/music.mp3");
+hunt.audioLoop.volume = 0.6;
 
 // ---------------------------------------------
 // Base functionality
@@ -80,6 +81,7 @@ hunt.startbuttonclickevent = function () {
 		hunt.gameOver = false;
 	}
 
+	hunt.audioLoop.volume = 0.3;
 	hunt.running = true;
 };
 
@@ -124,6 +126,8 @@ hunt.endGame = function () {
 	hunt.ducks.length = 0; // Remove all ducks.
 
 	hunt.canvas.style.cursor = "pointer";	
+
+	hunt.audioLoop.volume = 0.6;	
 };
 
 /* Main() - call this function to start animation. */
@@ -232,7 +236,7 @@ hunt.mainHandler = function () {
 					case 5:
 						size = 90;
 						speed = 5.5;
-						scores = 120;
+						scores = 200;
 						break;
 					case 6:
 						size = 120;
