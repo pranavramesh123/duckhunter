@@ -1,5 +1,5 @@
 # Duck Hunter
-Duck hunter game written in HTML5/javascript. I created this game in order to learn some new features of javascript.
+Duck hunter game written in HTML5 and vanilla JavaScript. I wrote this game in order to learn some new features of javascript.
 
 ![Screenshot](readme.jpg)
 
